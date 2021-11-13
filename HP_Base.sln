@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HP_Base", "HP_Base.vcxproj", "{69ABE5C3-423D-4FC2-B08A-3C958BE83120}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69ABE5C3-423D-4FC2-B08A-3C958BE83120}.Debug|x64.ActiveCfg = Debug|x64
+		{69ABE5C3-423D-4FC2-B08A-3C958BE83120}.Debug|x64.Build.0 = Debug|x64
+		{69ABE5C3-423D-4FC2-B08A-3C958BE83120}.Release|x64.ActiveCfg = Release|x64
+		{69ABE5C3-423D-4FC2-B08A-3C958BE83120}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1DAA036-4466-4D27-842F-18EE526AB011}
+	EndGlobalSection
+EndGlobal
