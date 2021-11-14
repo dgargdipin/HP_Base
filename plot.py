@@ -67,19 +67,23 @@ for column in cub_df.columns:
        ylabel = "Runtime(ms)")
     plt.savefig(os.path.join('plots',timestr_safe,column+".png"), bbox_inches='tight',dpi=199)
     plt.clf()
-for column in speedup_df.columns:
-    ax = plt.gca()
-    scale_x = 1e3
-    ticks_x = mticker.FuncFormatter(lambda x, pos: '{0:g}k'.format(x/scale_x))
-    ax.xaxis.set_major_formatter(ticks_x)
-    speedup_df.plot(y=column,ax=ax,label='Speedup Ratio')
-    delta_val=column.split('delta')[1]
-    ax.set(title = "Runtime speedup with δ="+delta_val,
+
+
+ax = plt.gca()
+scale_x = 1e3
+ticks_x = mticker.FuncFormatter(lambda x, pos: '{0:g}k'.format(x/scale_x))
+ax.xaxis.set_major_formatter(ticks_x)
+ax.set(title = "Runtime speedup with different δ",
        xlabel = "Input Size",
        ylabel = "Speedup")
+for column in speedup_df.columns:
+    delta_val=column.split('delta')[1]
+    speedup_df.plot(y=column,ax=ax,label='Delta='+delta_val)
 
-    plt.savefig(os.path.join('plots',timestr_safe,column+"_speedup.png"), bbox_inches='tight',dpi=199)
-    plt.clf()
+
+
+plt.savefig(os.path.join('plots',timestr_safe,"speedup.png"), bbox_inches='tight',dpi=199)
+plt.clf()
 
 
 
