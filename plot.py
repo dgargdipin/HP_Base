@@ -7,8 +7,8 @@ import pandas as pd
 import time
 import os
 
-input_sizes=list(range(1,6))
-input_sizes=[int(element*1e6) for element in input_sizes]
+input_sizes=list(range(1,10))
+input_sizes=[int(element*1e5) for element in input_sizes]
 print(input_sizes)
 # exit()
 deltas=[0.5,1,10,50,100]
@@ -16,12 +16,15 @@ deltas=[0.5,1,10,50,100]
 
 hp_base_df = pd.DataFrame(columns = ['delta'+str(a) for a  in deltas])
 cub_df = pd.DataFrame(columns = ['delta'+str(a) for a  in deltas])
+speedup_df = pd.DataFrame(columns = ['delta'+str(a) for a  in deltas])
 
 hp_base_df.index.name='Input Size'
 cub_df.index.name='Input Size'
+speedup_df.index.name='Input Size'
 for input_size in input_sizes:
     hp_base_arr=[]
     cub_arr=[]
+    speedup_arr=[]
     for delta in deltas:
         p = Popen([os.path.join('x64','Debug','HP_Base')], stdout=PIPE, stdin=PIPE, stderr=PIPE)
         strinput=str(input_size)+' '+str(int(input_size/delta))
@@ -34,14 +37,16 @@ for input_size in input_sizes:
 
         hp_base_arr.append(time_hp_base)        
         cub_arr.append(time_cub)
-        print(time_cub/time_hp_base)
+        speedup_arr.append(time_cub/time_hp_base)
     hp_base_df.loc[input_size] = hp_base_arr  
     cub_df.loc[input_size] = cub_arr  
+    speedup_df.loc[input_size] = speedup_arr  
 
 
 
 print("HP-Base\n",hp_base_df.head())
 print("CubSort\n",cub_df.head())
+print("Speedup\n",speedup_df.head())
 timestr_safe = time.strftime("%Y-%m-%d-%H-%M-%S")
 if not os.path.exists('plots'):
     os.makedirs('plots')
@@ -60,8 +65,20 @@ for column in cub_df.columns:
     ax.set(title = "Runtime comparison with δ="+delta_val,
        xlabel = "Input Size",
        ylabel = "Runtime(ms)")
-
     plt.savefig(os.path.join('plots',timestr_safe,column+".png"), bbox_inches='tight',dpi=199)
+    plt.clf()
+for column in speedup_df.columns:
+    ax = plt.gca()
+    scale_x = 1e3
+    ticks_x = mticker.FuncFormatter(lambda x, pos: '{0:g}k'.format(x/scale_x))
+    ax.xaxis.set_major_formatter(ticks_x)
+    speedup_df.plot(y=column,ax=ax,label='Speedup Ratio')
+    delta_val=column.split('delta')[1]
+    ax.set(title = "Runtime speedup with δ="+delta_val,
+       xlabel = "Input Size",
+       ylabel = "Speedup")
+
+    plt.savefig(os.path.join('plots',timestr_safe,column+"_speedup.png"), bbox_inches='tight',dpi=199)
     plt.clf()
 
 
@@ -69,10 +86,20 @@ for column in cub_df.columns:
 
 
 hp_base_df.to_csv(
-    os.path.join('plots',timestr_safe,"1-HP.csv")
+    os.path.join('plots',timestr_safe,"HP_base.csv")
     )
 cub_df.to_csv(
     os.path.join('plots',timestr_safe,"Cubsort.csv")
 
 )
+speedup_df.to_csv(
+    os.path.join('plots',timestr_safe,"speedup.csv")
 
+)
+
+import seaborn as sns
+
+heatmap=sns.heatmap(speedup_df, annot=True)
+
+figure = heatmap.get_figure()    
+figure.savefig(os.path.join('plots',timestr_safe,"speedup_heatmap.png"), bbox_inches='tight',dpi=199)
